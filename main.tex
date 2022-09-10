@@ -20,6 +20,8 @@
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amsthm, amssymb, latexsym}
+\usepackage{exscale}
+\usepackage{caption}
 
 \usepackage{array,booktabs,tabularx}
 \newcolumntype{Z}{>{\centering\arraybackslash}X} % centered tabularx columns
@@ -40,6 +42,14 @@
 \setlength{\onecolwid}{0.24\paperwidth}
 \setlength{\twocolwid}{0.4\paperwidth}
 \setlength{\threecolwid}{0.19\paperwidth}
+
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+\setbeamertemplate{bibliography entry article}{}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+\setbeamertemplate{bibliography entry year}{}
+\setbeamertemplate{caption}[numbered]
 
 % ---------------------------------------------------------------------------------------------------% 
 % Title, author, date, etc.
@@ -65,240 +75,125 @@
     % -----------------------------------------------------------
     \begin{column}{\onecolwid}
       % -----------------------------------------------------------
-      % 1-1 (first column's first block
-      % -----------------------------------------------------------
-\vskip3ex
-      % -----------------------------------------------------------
       % 1-1
       % -----------------------------------------------------------
-      \begin{alertblock}{Alerted Block}
-        \baselineskip=.7\baselineskip
-        \vskip1ex
-        This is an \textbf{\alert{alerted}} block. \\
-        Use alerted blocks to highlight important points.
-        \vskip1ex
-      \end{alertblock}
+    \begin{block}{Introduction}
+	\baselineskip=.7\baselineskip
 
-      \vskip3ex
-
-      % -----------------------------------------------------------
-      % 1-2
-      % -----------------------------------------------------------
-      \begin{block}{Normal Block}
-        \baselineskip=.7\baselineskip
-
-	This is a normal block. 
-
-	\begin{itemize}
-	\item Put
-	\item your
-	\item argument
-	\item here
-	\end{itemize}
+	Inverse-propensity scoring (IPS) and neural click models are two popular methods for learning rankers from position-biased click data.\\
+	\vspace{1ex}
+	Despite their prevalence, the two methodologies are rarely directly compared on equal footing.\\
+	\vspace{1ex}
+	We compare the theoretical differences of both approaches in the pointwise ranking setting and present an empirical comparison on semi-synthetic click data.
 
 	\end{block}
 
-\vskip3ex
+	\vspace{1ex}
 
-      % -----------------------------------------------------------
-      % 1-3
-      % -----------------------------------------------------------
-      \begin{block}{Sample Block}
-        \baselineskip=.7\baselineskip
-\vskip2ex
-
-	Put something here. You can put equations, too.
-
-\begin{align}
-f(x) &= \frac{1}{2\sqrt{\pi \sigma^2}}\exp \Big(- \frac{(x-\mu)^2}{2\sigma^2} \Big) \nonumber
-\end{align}
-
-\vskip2ex
-
-	Normal distribution
-	\begin{itemize}
-	\item $x$ is a random variable.
-	\item $\mu$ is the mean of $x$.
-	\item $\sigma$ is the standard deviation of $x$
-	\end{itemize}
-
-      \end{block}
-
-
-      \vskip3ex
-
-      % -----------------------------------------------------------
-      % 1-4
-      % -----------------------------------------------------------
-      \begin{block}{Sample Block}
-        \baselineskip=.7\baselineskip
-\vskip2ex
-        You can put figures, too.
-
-	\vskip2ex
-
-	\begin{figure}
-	\begin{center}
-	\caption{Potential Endogeneity Problem}
-		\includegraphics[width=9in]{figEndog}
-	\end{center}
-	\end{figure}
+	% -----------------------------------------------------------
+	% 1-2
+	% -----------------------------------------------------------
+	\begin{block}{Methods}
+		\baselineskip=.7\baselineskip
 	
-	\vskip2ex
+		\textbf{User model:} Let $y_d$ be the probability of a document $d$ being relevant and $o_k$ the probability of observing a rank $k$, then users click only on items that are observed and relevant~\cite{Craswell2008Cascade}: $c_{d,k} = o_k \cdot y_d$.
+		
+		\vspace{1ex}
+		
+		\textbf{Neural click model:} Predicts biased user clicks. Document relevance $\hat{y}_d$ and position bias $\hat{o}_k$ are latent parameters inferred by minimizing binary cross-entropy between predicted and observed clicks~\cite{Yan2022TwoTowers}:
+		\vspace{1ex}
+		%
+		\begin{equation*}
+			\begin{split}
+			\mathcal{L}_{\text{pbm}}(\hat{y}, \hat{o}) &= - \sum_{(d, k) \in D} c_{d,k} \cdot \log(\hat{y}_{d} \cdot \hat{o}_{k}) + (1 - c_{d,k}) \cdot \log(1 - \hat{y}_{d} \cdot \hat{o}_{k}).
+			\end{split}
+		\end{equation*}
+		%
 
-	{\bf Put something here} 
-	\begin{itemize}
-	\item Put something here. Put something here.Put something here.
-	\item Put something here. Put something here.Put something here.
-	\item Put something here. Put something here.Put something here.
-	\end{itemize}
+		\vspace{1ex}
+		
+		\textbf{Pointwise IPS:} Directly predicts document relevance $\hat{y}_d$ by weighting clicks inversely to the probability of being observed by the user~\cite{Saito2020PointwiseIPS}:
+		\vspace{1ex}
+		%
+		\begin{equation*}
+			\begin{split}
+			\mathcal{L}_{\text{ips}}(\hat{y}, \hat{o}) = - \sum_{(d,k) \in D} \frac{c_{d,k}}{\hat{o}_k} \cdot \log(\hat{y}_{d}) + (1 - \frac{c_{d,k}}{\hat{o}_k}) \cdot \log(1 - \hat{y}_{d}).
+			\end{split}
+		\end{equation*}
+		%
 
-      \end{block}
+		\vspace{1ex}
 
-	\end{column}
+		\begin{itemize}
+			\item \textbf{Unbiased IPS}: Saito et al. show that the pointwise IPS estimator is unbiased when correctly estimating position bias~\cite{Saito2020PointwiseIPS}.
+			\item \textbf{Click model inconsistency}: Oosterhuis shows that click models jointly inferring bias and relevance parameters are not always conistent estimators of document relevance~\cite{Oosterhuis2022ULTRLimits}.
+			\item \textbf{Unbiased click model}: \alert{We show that the neural click model optimizes for unbiased document relevance when, similar to IPS, given access to the true position bias}: $\hat{y} = \frac{o \cdot y}{\hat{o}}$.
+		\end{itemize}
+	
+	\end{block}
+
+	\vspace{1ex}
+	
+	\begin{block}{The impact of position bias on loss}
+
+		\begin{figure}[h]
+			\includegraphics[width=1.\textwidth]{loss.pdf}
+			%\caption{Visualizing the loss of the neural click model and pointwise IPS for a single document of relevance $y_d = 0.5$ under varying degrees of position bias.}
+		\end{figure}
+	
+		\begin{itemize}
+			\item The magnitude of the click model loss gets smaller with increasing position bias, since items at low positions will have a small click probability independent of their relevance.
+			\item The IPS loss always converges to the same loss distribution as the number of clicks approaches infinity.
+		\end{itemize}	
+		
+	\end{block}
+
+\end{column}
 
     % -----------------------------------------------------------
     % Start the second column
     % -----------------------------------------------------------
     \begin{column}{\twocolwid}
-    \begin{columns}[t,totalwidth=\twocolwid]
-    	    \begin{column}{\threecolwid}
-      % -----------------------------------------------------------
-      % 2-1a
-      % -----------------------------------------------------------
-      \begin{block}{Sample Block (Left)}
-        \baselineskip=.7\baselineskip
-
-	Put whatever you want.
-	\begin{itemize}
-	\item Yes.
-	\item This
-	\item is
-	\item just
-	\item an
-	\item example.
-	\end{itemize}
-
-	\vskip1ex
-      \end{block}
-	    \end{column}
-	    \begin{column}{3.75ex}\end{column}
-    	    \begin{column}{\threecolwid}
-
-      % -----------------------------------------------------------
-      % 2-1b
-      % -----------------------------------------------------------
-      \begin{block}{Sample Block (Right)}
-        \baselineskip=.7\baselineskip
-
-	Put whatever you want.
-	\vspace{1ex}
-	\begin{itemize}
-	\item No.
-	\item This
-	\item is
-	\item not
-	\item a real
-	\item poster.
-	\end{itemize}
-      \end{block}
-	    \end{column}
-	   \end{columns}
-      \vskip2ex
-
-      % -----------------------------------------------------------
-      % 2-3
-      % -----------------------------------------------------------
-      \begin{alertblock}{Sample Block (Wide)}
-	\begin{columns}[c] \column{.45\textwidth}
-%      \vskip1ex
-      {\bf This block is wide.}
-      \begin{itemize}
-      \item Put something here.Put something here.Put something here.
-      \item Put something here.Put something here.
-      \item Don't you get it? Put something here.
-      \end{itemize}
-
-%\vskip2ex
-
-	% Phantom column
-	\column{.01\textwidth}
-	\begin{beamercolorbox}[wd=.1in,ht=2in]{cboxg}\end{beamercolorbox}
-	\vskip2ex
-
-	\column{.45\textwidth}
-	\vskip2ex
-      {\bf Put something here.}
-      \vskip1ex
-	\begin{tabular}{>{\color{myred}}rl}
-	Something & = Blur blur blur\\
-		& Yadi Yadi Ya \\ [1em]
-	Anything & = Put something here. \\
-		& OK?
-	\end{tabular}
-
-\end{columns}
-
-	\vskip3ex
-
-      {\bf Please}: 
-      Put something here. 
-        {\small\boldmath
-\begin{align}
-{\cal L} &= \prod_{i=1}^{n} 
-\Pr(T_{wi} > t^0_{wi})^{(1-c_i)}
-\Pr(T_{wi} = t_{wi} \cap T_{pi} > t^0_{pi} )^{c_i (1-d_i)}
-\Pr(T_{wi} = t_{wi} \cap T_{pi} = t_{pi} )^{c_i d_i}. \nonumber
-\end{align}
-}
-
-      \end{alertblock}
-
-	\vskip2ex
-
-      % -----------------------------------------------------------
-      % 2-3
-      % -----------------------------------------------------------
-      \begin{block}{Another Sample Block}
-      \vskip-2ex
-      \begin{figure}[h]
-	\hfill
-	\begin{minipage}[t]{.49\textwidth}
-	\begin{center}
-	\caption{Figure Title Here}
-		\includegraphics{figLeft}
-	\end{center}
-	\end{minipage}
-	\hfill
-	\begin{minipage}[t]{.49\textwidth}
-	\begin{center}
-	\caption{Figure Title Here}
-		\includegraphics{figRight}
-	\end{center}
-	\end{minipage}
-	\hfill
+	% -----------------------------------------------------------
+	% 2-1
+	% -----------------------------------------------------------
+	\begin{block}{Experimental results}
+		
+	\begin{figure}[h]
+		\includegraphics[width=1.\textwidth]{results}
+		\caption{Test performance on three large-scale LTR datasets and one fully synthetic dataset after training on up to 100M simulated queries. All results are averaged over 10 independent runs, and we display a bootstrapped 95\% confidence interval.}
+		\label{fig:results}
 	\end{figure}
-	\vskip3ex
+	
+	\vskip1ex
 
-R code ({\tt plotFigs.R}) accompanying this template will produce all the figures included in this poster (except for the Rice Logo).
-
-\vskip1ex
-
-{\bf Explain the figure here.}
 	\begin{itemize}
-	\item Put something here. Put something here. Put something here. Put something here. Put something here. 
-	\item Put something here. Put something here. Put something here. Put something here. Put something here. 
+		\item \textbf{IPS / PBM Naive}: Both approaches are equivalent when we naively do not compensating for position bias.
+		\item \textbf{PBM - Estimated Bias}: A neural click model jointly estimating position bias and document relevance performs better than the naive baseline on YAHOO and MSLR-WEB30K.
+		\item \textbf{PBM - True Bias}: A neural click model with access to the true position bias reduces variance and improves performance over the naive baseline on all datasets.
+		\item \textbf{IPS - True Bias}: \alert{The IPS approach outperforms the neural click model significantly on Istella and Yahoo}.
 	\end{itemize}
 
-	\vskip3ex
+    \end{block}
 
-{\bf Put something here.}
-	\begin{itemize}
-	\item Blur Blur Blur
-	\item Yadi Yadi Yah
-	\end{itemize}
+	\vspace{2ex}
 
-      \end{block}
+	\begin{block}{Is the neural click model biased?}
+
+		\begin{figure}[h]
+			\includegraphics[width=\textwidth]{loss_bias.pdf}
+  			\label{fig:loss_bias}
+		\end{figure}
+		
+		\vskip1ex
+	
+		\begin{itemize}
+			\item Both approaches converge to the unbiased document relevance when computing the loss for each item separately (dotted lines).
+			\item IPS converges to the average relevance of both documents, when optimizing the combined loss for both documents (solid line).
+			\item \alert{The neural click model converges to a joint document relevance for both documents that is biased towards the item with the higher examination probability}.
+		\end{itemize}
+	
+		\end{block}
 
 \end{column}
 
@@ -306,98 +201,57 @@ R code ({\tt plotFigs.R}) accompanying this template will produce all the figure
     % Start the third column
     % -----------------------------------------------------------
     \begin{column}{\onecolwid}
-\vskip3ex
-
-      % -----------------------------------------------------------
-      % 3-0
-      % -----------------------------------------------------------
-      \begin{block}{Sample Block}
-        \baselineskip=.7\baselineskip
-\vskip2ex
-        The following table is from the TeXShop template. 
-
-	\vskip2ex
-
-% Requires the booktabs if the memoir class is not being used
-\begin{table}[htbp]
-   \centering
-   %\topcaption{Table captions are better up top} % requires the topcapt package
-   \begin{tabular}{@{} lcr @{}} % Column formatting, @{} suppresses leading/trailing space
-      \toprule
-      \multicolumn{2}{c}{Item} \\
-      \cmidrule(r){1-2} % Partial rule. (r) trims the line a little bit on the right; (l) & (lr) also possible
-      Animal    & Description & Price (\$)\\
-      \midrule
-      Gnat      & per gram & 13.65 \\
-                & each     &  0.01 \\
-      Gnu       & stuffed  & 92.50 \\
-      Emu       & stuffed  & 33.33 \\
-      Armadillo & frozen   &  8.99 \\
-      \bottomrule
-   \end{tabular}
-   \caption{Remember, \emph{never} use vertical lines in tables.}
-   \label{tab:booktabs}
-\end{table}
 	
-	\vskip2ex
-
-	{\bf I honestly don't know what this table means.} 
-	\begin{itemize}
-	\item This is just
-	\item an
-	\item example.
-	\end{itemize}
-
-      \end{block}
-
-\vskip3ex
-
-
-      % -----------------------------------------------------------
-      % 3-4
-      % -----------------------------------------------------------
-      \begin{alertblock}{Findings}
-        \baselineskip=.7\baselineskip
-
-      \vskip2ex
-
-	\begin{figure}
-	\begin{center}
-	\caption{Effect of X on Y}
-		\includegraphics{figResult}
-	\end{center}
-	\end{figure}
-Explain the findings.
-      \vskip2ex
-
-	\end{alertblock}
-      \vskip2ex
-
-      % -----------------------------------------------------------
-      % 3-4
-      % -----------------------------------------------------------
-      \begin{block}{Conclusion}
-        \baselineskip=.7\baselineskip
-
-      \vskip2ex
-
-	{\bf Remember:}\\
-	\begin{itemize} 
-	\item You'd 
-	\item better
-	\item keep
-	\item it
-	\item simple!
-	\end{itemize}
-
-      \vskip2ex
+	% -----------------------------------------------------------
+	% 3-0
+	% -----------------------------------------------------------
+    \begin{block}{Experiments on neural click model bias}
+   		\baselineskip=.7\baselineskip
+	
+		{\bf We run three additional experiments:}
+		\begin{itemize}
+			\item {\bf Independent features}: When documents share no features (one-hot encoded documents), the empirical performance of IPS and the neural click model is equivalent (Synthetic in Figure~\ref{fig:results}).
+			\item {\bf Feature collisions}: Gradually forcing random documents to share feature vectors leads to stronger performance drop for the neural click model.
+			\item {\bf Position bias recovery}: When simulating increasing levels of position bias, we find that IPS can recover from strong position bias, while the neural click model increasingly deteriorates in performance even if the true position bias is known.
+		\end{itemize}
 
 	\end{block}
-      \vskip2ex
 
+	\vspace{2ex}
+
+	% -----------------------------------------------------------
+	% 3-1
+	% -----------------------------------------------------------
+	\begin{alertblock}{Takeways}
+		\baselineskip=.7\baselineskip
+	
+		\begin{itemize}
+			\item We show that both approaches optimize for unbiased document relevance if the true position bias is known and relevance is estimated separately per query-document pair.
+			\item We find the neural click model to be affected by position bias when learning from shared, sometimes conflicting, features instead of estimating each document relevance separately.
+		\end{itemize}
+
+	\end{alertblock}
+
+
+	\vspace{2ex}
+
+	% -----------------------------------------------------------
+	% 3-2
+	% -----------------------------------------------------------
+	\begin{block}{Selected References}
+		\baselineskip=.7\baselineskip
+		\bibliographystyle{acm}
+		\bibliography{references}
+	\end{block}
+
+	\begin{block}{}
+		\begin{figure}[h]
+			\includegraphics[width=.3\textwidth]{qr}
+			\caption*{Scan to read the paper}
+		\end{figure}
+	\end{block}
 
 	\end{column}
 \end{columns}
 \end{frame}
 \end{document}
-
