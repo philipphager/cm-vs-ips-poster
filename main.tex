@@ -164,25 +164,25 @@
 	% -----------------------------------------------------------
 	\begin{block}{Experimental results}
 		
-	{\bf RQ:} Given the true position bias, do both approaches perform equally in an empirical comparison?
+		{\bf RQ:} Given the true position bias, do both approaches perform equally in an empirical comparison?
 
-	\vspace{1ex}
+		\vspace{1ex}
 
-	\begin{figure}[h]
-		\includegraphics[width=1.\textwidth]{results}
-		\caption{Test performance on three large-scale LTR datasets and one fully synthetic dataset after training on up to 100M simulated queries. The simulated user behavior follows the position-based model~\cite{Craswell2008Cascade}. Results are averaged over ten independent experimental runs.}
-		\label{fig:results}
-	\end{figure}
-	
-	\vskip1ex
+		\begin{figure}[h]
+			\includegraphics[width=1.\textwidth]{results}
+			\caption{Test performance on three large-scale LTR datasets and one fully synthetic dataset after training on up to 100M simulated queries. The simulated user behavior follows the position-based model~\cite{Craswell2008Cascade}. Results are averaged over ten independent experimental runs.}
+			\label{fig:results}
+		\end{figure}
+		
+		\vskip1ex
 
-	\begin{itemize}
-		\item \textbf{PBM - Estimated Bias}: A neural click model jointly estimating position bias and relevance performs better than a naive baseline that does not compensate for position bias on Yahoo and MSLR-WEB30K.
-		\item \textbf{PBM - True Bias}: A neural click model with access to the true position bias has reduced variance and improved performance over the naive baseline on all datasets.
-		\item \textbf{IPS - True Bias}: \alert{Pointwise IPS outperforms the neural click model significantly on Istella and Yahoo}.
-	\end{itemize}
+		\begin{itemize}
+			\item \textbf{PBM - Estimated Bias}: A neural click model jointly estimating position bias and relevance performs better than a naive baseline that does not compensate for position bias on Yahoo and MSLR-WEB30K.
+			\item \textbf{PBM - True Bias}: A neural click model with access to the true position bias has reduced variance and improved performance over the naive baseline on all datasets.
+			\item \textbf{IPS - True Bias}: \alert{Pointwise IPS outperforms the neural click model significantly on Istella and Yahoo}.
+		\end{itemize}
 
-    \end{block}
+	\end{block}
 
 	\vspace{2ex}
 
