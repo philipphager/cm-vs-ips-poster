@@ -82,8 +82,8 @@
 		Inverse-propensity scoring (IPS) and click models (CM) are prevalent methods for learning rankers from position-biased click data:
 		\vspace{1ex}
 		\begin{itemize}
-			\item {\bf IPS methods}: Assume position bias is known, typically use document features, optimize pointwise/pairwise/listwise rankings.
-			\item {\bf Click models}: Infer position bias, typically treat each document separately, optimize pointwise rankings.
+			\item {\bf IPS methods}: Assume position bias is known, typically use document features and optimize point-/pair-/listwise rankings.
+			\item {\bf Click models}: Infer position bias, typically treat each document separately and make pointwise relevance estimations.
 		\end{itemize}
 		
 		\vspace{1ex}
@@ -137,7 +137,7 @@
 
 		\begin{itemize}
 			\item \textbf{IPS}: Saito et al. show that the pointwise IPS estimator is unbiased when correctly estimating position bias~\cite{Saito2020PointwiseIPS}.
-			\item \textbf{CM with joint parameter inference}: Oosterhuis shows that click models jointly inferring bias and relevance are not always consitent estimators of document relevance~\cite{Oosterhuis2022ULTRLimits}.
+			\item \textbf{CM with joint parameter inference}: Oosterhuis shows that click models jointly inferring bias and relevance are not always consistent estimators of document relevance~\cite{Oosterhuis2022ULTRLimits}.
 			\item \textbf{CM only inferring relevance}: \alert{We show that neural click models optimize for unbiased document relevance when, similar to IPS, given access to the true position bias}: $\hat{y} = \frac{o y}{\hat{o}}$.
 		\end{itemize}
 
@@ -167,7 +167,7 @@
 
 	\begin{figure}[h]
 		\includegraphics[width=1.\textwidth]{results}
-		\caption{Test performance on three large-scale LTR datasets and one fully synthetic dataset after training on up to 100M simulated queries. The simulated user behavior follows the position-based model~\cite{Craswell2008Cascade}. Results are averaged over 10 independent experimental runs.}
+		\caption{Test performance on three large-scale LTR datasets and one fully synthetic dataset after training on up to 100M simulated queries. The simulated user behavior follows the position-based model~\cite{Craswell2008Cascade}. Results are averaged over ten independent experimental runs.}
 		\label{fig:results}
 	\end{figure}
 	
@@ -199,11 +199,11 @@
 	
 		\begin{itemize}
 			\item Both approaches converge to the unbiased document relevance when computing the loss for each item separately (dotted lines).
-			\item IPS converges to the average relevance of both documents, when optimizing the combined loss for both documents (solid line).
+			\item IPS converges to the average relevance of both documents when optimizing the combined loss for both documents (solid line).
 			\item \alert{The neural click model converges to a joint document relevance for both documents that is biased towards the item with the higher examination probability}.
 		\end{itemize}
 	
-		\end{block}
+	\end{block}
 
 \end{column}
 
@@ -222,7 +222,7 @@
 
 		\begin{itemize}
 			\item {\bf Independent features}: When documents share no features (one-hot encoded documents), the empirical performance of IPS and the neural click model is equivalent (Synthetic in Figure~\ref{fig:results}).
-			\item {\bf Feature collisions}: Gradually forcing random documents to share feature vectors leads to stronger performance drop for the neural click model.
+			\item {\bf Feature collisions}: Gradually forcing random documents to share feature vectors leads to a stronger performance drop for the neural click model.
 			\item {\bf Position bias recovery}: When simulating increasing levels of position bias, we find that IPS can recover from strong position bias, while the neural click model increasingly deteriorates in performance even if the true position bias is known.
 		\end{itemize}
 
@@ -238,7 +238,7 @@
 	
 		\begin{itemize}
 			\item We show that both approaches optimize for unbiased document relevance if the true position bias is known and relevance is estimated separately per query-document pair.
-			\item We find the neural click model to be affected by position bias when learning from shared, sometimes conflicting, features instead of estimating each document relevance separately.
+			\item We find the neural click model to be affected by position bias when learning from shared, sometimes conflicting, features instead of estimating each document's relevance separately.
 		\end{itemize}
 
 	\end{alertblock}
