@@ -78,7 +78,6 @@
       % 1-1
       % -----------------------------------------------------------
     \begin{block}{Introduction}
-	\baselineskip=.7\baselineskip
 
 		Inverse-propensity scoring (IPS) and click models (CM) are prevalent methods for learning rankers from position-biased click data:
 		\vspace{1ex}
@@ -100,13 +99,13 @@
 
 	\end{block}
 
-	\vspace{2ex}
+	\vspace{1ex}
 
 	% -----------------------------------------------------------
 	% 1-2
 	% -----------------------------------------------------------
 	\begin{block}{Methods}
-		\baselineskip=.7\baselineskip
+
 		\textbf{Neural click model:} Predicts biased user clicks. Document relevance $\hat{y}_d$ and position bias $\hat{o}_k$ are latent parameters inferred by minimizing binary cross-entropy between predicted and observed clicks~\cite{Yan2022TwoTowers}:
 		\vspace{1ex}
 		%
@@ -131,7 +130,7 @@
 
 	\end{block}
 
-	\vspace{2ex}
+	\vspace{1ex}
 	
 	\begin{alertblock}{Comparing unbiasedness}
 		\vspace{1ex}
@@ -217,8 +216,6 @@
 	% 3-0
 	% -----------------------------------------------------------
     \begin{block}{Experiments on neural click model bias}
-   		\baselineskip=.7\baselineskip
-	
 		{\bf We run three additional experiments:}
 
 		\vskip1ex
@@ -236,7 +233,7 @@
 	% -----------------------------------------------------------
 	% 3-1
 	% -----------------------------------------------------------
-	\begin{alertblock}{Takeways}
+	\begin{alertblock}{Conclusion}
 		\vskip1ex
 	
 		\begin{itemize}
@@ -252,17 +249,16 @@
 	% 3-2
 	% -----------------------------------------------------------
 	\begin{block}{Selected References}
-		\baselineskip=.7\baselineskip
 		\bibliographystyle{acm}
 		\bibliography{references}
 	\end{block}
 
-	\begin{block}{}
-		\begin{figure}[h]
-			\includegraphics[width=.3\textwidth]{qr}
-			\caption*{Scan to read the paper}
-		\end{figure}
-	\end{block}
+	\vspace{2ex}
+
+	\begin{figure}[h]
+		\includegraphics[width=.3\textwidth]{qr}
+		\caption*{Scan to read the paper}
+	\end{figure}
 
 	\end{column}
 \end{columns}
