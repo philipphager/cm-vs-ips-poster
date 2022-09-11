@@ -80,26 +80,33 @@
     \begin{block}{Introduction}
 	\baselineskip=.7\baselineskip
 
-	Inverse-propensity scoring (IPS) and neural click models are two popular methods for learning rankers from position-biased click data.\\
-	\vspace{1ex}
-	Despite their prevalence, the two methodologies are rarely directly compared on equal footing.\\
-	\vspace{1ex}
-	We compare the theoretical differences of both approaches in the pointwise ranking setting and present an empirical comparison on semi-synthetic click data.
+		Inverse-propensity scoring (IPS) and click models (CM) are prevalent methods for learning rankers from position-biased click data:
+		\vspace{1ex}
+		\begin{itemize}
+			\item {\bf IPS methods}: Assume position bias is known, typically use document features, optimize pointwise/pairwise/listwise rankings.
+			\item {\bf Click models}: Infer position bias, typically treat each document separately, optimize pointwise rankings.
+		\end{itemize}
+		
+		\vspace{1ex}
+		
+		Is a neural click model leveraging document features equivalent to a pointwise IPS ranker when both use the same position bias estimation?
+		
+		\vspace{1ex}
+		
+		\begin{itemize}
+			\item We compare both approaches theoretically.
+			\item We perform an empirical comparison on semi-synthetic click data.
+		\end{itemize}
 
 	\end{block}
 
-	\vspace{1ex}
+	\vspace{2ex}
 
 	% -----------------------------------------------------------
 	% 1-2
 	% -----------------------------------------------------------
 	\begin{block}{Methods}
 		\baselineskip=.7\baselineskip
-	
-		\textbf{User model:} Let $y_d$ be the probability of a document $d$ being relevant and $o_k$ the probability of observing a rank $k$, then users click only on items that are observed and relevant~\cite{Craswell2008Cascade}: $c_{d,k} = o_k \cdot y_d$.
-		
-		\vspace{1ex}
-		
 		\textbf{Neural click model:} Predicts biased user clicks. Document relevance $\hat{y}_d$ and position bias $\hat{o}_k$ are latent parameters inferred by minimizing binary cross-entropy between predicted and observed clicks~\cite{Yan2022TwoTowers}:
 		\vspace{1ex}
 		%
@@ -122,31 +129,27 @@
 		\end{equation*}
 		%
 
+	\end{block}
+
+	\vspace{2ex}
+	
+	\begin{alertblock}{Comparing unbiasedness}
 		\vspace{1ex}
 
 		\begin{itemize}
-			\item \textbf{Unbiased IPS}: Saito et al. show that the pointwise IPS estimator is unbiased when correctly estimating position bias~\cite{Saito2020PointwiseIPS}.
-			\item \textbf{Click model inconsistency}: Oosterhuis shows that click models jointly inferring bias and relevance parameters are not always conistent estimators of document relevance~\cite{Oosterhuis2022ULTRLimits}.
-			\item \textbf{Unbiased click model}: \alert{We show that the neural click model optimizes for unbiased document relevance when, similar to IPS, given access to the true position bias}: $\hat{y} = \frac{o \cdot y}{\hat{o}}$.
+			\item \textbf{IPS}: Saito et al. show that the pointwise IPS estimator is unbiased when correctly estimating position bias~\cite{Saito2020PointwiseIPS}.
+			\item \textbf{CM with joint parameter inference}: Oosterhuis shows that click models jointly inferring bias and relevance are not always consitent estimators of document relevance~\cite{Oosterhuis2022ULTRLimits}.
+			\item \textbf{CM only inferring relevance}: \alert{We show that neural click models optimize for unbiased document relevance when, similar to IPS, given access to the true position bias}: $\hat{y} = \frac{o y}{\hat{o}}$.
 		\end{itemize}
-	
-	\end{block}
 
-	\vspace{1ex}
-	
-	\begin{block}{The impact of position bias on loss}
+		\vspace{1ex}
 
 		\begin{figure}[h]
 			\includegraphics[width=1.\textwidth]{loss.pdf}
-			%\caption{Visualizing the loss of the neural click model and pointwise IPS for a single document of relevance $y_d = 0.5$ under varying degrees of position bias.}
+			\caption{The loss for a document of relevance $y_d = 0.5$ under varying degrees of position bias. Both methods have their minima at the true relevance, but the magnitude of the click model loss decreases with an increase in bias.}
 		\end{figure}
-	
-		\begin{itemize}
-			\item The magnitude of the click model loss gets smaller with increasing position bias, since items at low positions will have a small click probability independent of their relevance.
-			\item The IPS loss always converges to the same loss distribution as the number of clicks approaches infinity.
-		\end{itemize}	
-		
-	\end{block}
+
+	\end{alertblock}
 
 \end{column}
 
@@ -159,19 +162,22 @@
 	% -----------------------------------------------------------
 	\begin{block}{Experimental results}
 		
+	{\bf RQ:} Given the true position bias, do both approaches perform equally in an empirical comparison?
+
+	\vspace{1ex}
+
 	\begin{figure}[h]
 		\includegraphics[width=1.\textwidth]{results}
-		\caption{Test performance on three large-scale LTR datasets and one fully synthetic dataset after training on up to 100M simulated queries. All results are averaged over 10 independent runs, and we display a bootstrapped 95\% confidence interval.}
+		\caption{Test performance on three large-scale LTR datasets and one fully synthetic dataset after training on up to 100M simulated queries. The simulated user behavior follows the position-based model~\cite{Craswell2008Cascade}. Results are averaged over 10 independent experimental runs.}
 		\label{fig:results}
 	\end{figure}
 	
 	\vskip1ex
 
 	\begin{itemize}
-		\item \textbf{IPS / PBM Naive}: Both approaches are equivalent when we naively do not compensating for position bias.
-		\item \textbf{PBM - Estimated Bias}: A neural click model jointly estimating position bias and document relevance performs better than the naive baseline on YAHOO and MSLR-WEB30K.
-		\item \textbf{PBM - True Bias}: A neural click model with access to the true position bias reduces variance and improves performance over the naive baseline on all datasets.
-		\item \textbf{IPS - True Bias}: \alert{The IPS approach outperforms the neural click model significantly on Istella and Yahoo}.
+		\item \textbf{PBM - Estimated Bias}: A neural click model jointly estimating position bias and relevance performs better than a naive baseline that does not compensate for position bias on Yahoo and MSLR-WEB30K.
+		\item \textbf{PBM - True Bias}: A neural click model with access to the true position bias has reduced variance and improved performance over the naive baseline on all datasets.
+		\item \textbf{IPS - True Bias}: \alert{Pointwise IPS outperforms the neural click model significantly on Istella and Yahoo}.
 	\end{itemize}
 
     \end{block}
@@ -180,8 +186,13 @@
 
 	\begin{block}{Is the neural click model biased?}
 
+		{\bf RQ:} Items at lower position contribute less to the click model's loss, does generalizing over features introduce bias?
+
+		\vspace{1ex}
+
 		\begin{figure}[h]
 			\includegraphics[width=\textwidth]{loss_bias.pdf}
+			\caption{Visualizing loss and estimated relevance for an irrelevant document displayed at a high rank (orange square) and a relevant document displayed at a low rank (red triangle). The solid blue line shows the combined loss of both documents.}
   			\label{fig:loss_bias}
 		\end{figure}
 		
@@ -209,6 +220,9 @@
    		\baselineskip=.7\baselineskip
 	
 		{\bf We run three additional experiments:}
+
+		\vskip1ex
+
 		\begin{itemize}
 			\item {\bf Independent features}: When documents share no features (one-hot encoded documents), the empirical performance of IPS and the neural click model is equivalent (Synthetic in Figure~\ref{fig:results}).
 			\item {\bf Feature collisions}: Gradually forcing random documents to share feature vectors leads to stronger performance drop for the neural click model.
@@ -223,7 +237,7 @@
 	% 3-1
 	% -----------------------------------------------------------
 	\begin{alertblock}{Takeways}
-		\baselineskip=.7\baselineskip
+		\vskip1ex
 	
 		\begin{itemize}
 			\item We show that both approaches optimize for unbiased document relevance if the true position bias is known and relevance is estimated separately per query-document pair.
@@ -231,7 +245,6 @@
 		\end{itemize}
 
 	\end{alertblock}
-
 
 	\vspace{2ex}
 
